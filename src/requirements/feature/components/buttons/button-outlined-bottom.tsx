@@ -1,5 +1,5 @@
 'use client';
-import { RawDefaultProps } from 'anitha/data-models';
+import { RawDefaultProps } from 'anitha/requirements/data-models';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 

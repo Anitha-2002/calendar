@@ -1,6 +1,9 @@
 import React from 'react';
 import { ButtonOutlined, ButtonOutlinedBottom, ButtonV1 } from '../components';
-import { PageLayoutTypesData, RawDefaultProps } from 'anitha/data-models';
+import {
+  PageLayoutTypesData,
+  RawDefaultProps,
+} from 'anitha/requirements/data-models';
 interface PageLayoutProps extends RawDefaultProps {
   dateRange?: string;
   day: number;

@@ -1,4 +1,4 @@
-import { RawDefaultProps } from 'anitha/data-models';
+import { RawDefaultProps } from 'anitha/requirements/data-models';
 import React from 'react';
 interface ButtonV1Props extends RawDefaultProps {}
 export const ButtonV1 = ({ children, className }: ButtonV1Props) => {
