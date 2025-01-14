@@ -1,23 +1,24 @@
 'use client';
-import { RawDefaultProps } from 'anitha/requirements/data-models';
+import { RawButtonProps } from 'anitha/requirements/data-models';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 
-interface ButtonV1Props extends RawDefaultProps {}
+interface ButtonV1Props extends RawButtonProps {
+  outlined?: boolean;
+}
 export const ButtonOutlinedBottom = ({
   children,
   className,
+  outlined = true,
+  handleClick,
 }: ButtonV1Props) => {
-  const [isClicked, setIsClicked] = useState<Boolean>(false);
   return (
     <button
       className={clsx(
         `border-b-2 hover:border-blue-500 rounded-sm px-2 py-0 ${className}`,
-        isClicked ? 'border-blue-500' : 'border-white'
+        outlined ? 'border-blue-500' : 'border-white'
       )}
-      onClick={() => {
-        setIsClicked(!isClicked);
-      }}
+      onClick={handleClick}
     >
       {children}
     </button>
