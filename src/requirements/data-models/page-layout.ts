@@ -11,3 +11,5 @@ export const PageLayoutTypesData = [
   { key: PageLayoutTypes.MONTH, value: 'Month' },
   { key: PageLayoutTypes.YEAR, value: 'Year' },
 ];
+
+export type pageType = (typeof PageLayoutTypes)[keyof typeof PageLayoutTypes];

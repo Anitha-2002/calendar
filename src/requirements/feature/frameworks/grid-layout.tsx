@@ -2,15 +2,14 @@
 import {
   PageLayoutTypesData,
   PageLayoutTypes,
+  pageType,
 } from 'anitha/requirements/data-models';
 import React, { useEffect, useState } from 'react';
 import { ButtonOutlined, ButtonOutlinedBottom, ButtonV1 } from '../components';
 
-type pageType = (typeof PageLayoutTypes)[keyof typeof PageLayoutTypes];
+// interface GridLayoutProps {}
 
-interface GridLayoutProps {}
-
-export const GridLayout: React.FC<GridLayoutProps> = ({}) => {
+export const GridLayout = ({}) => {
   const outlinedButtonContents = ['<', '>'];
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -167,11 +166,11 @@ export const GridLayout: React.FC<GridLayoutProps> = ({}) => {
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           {PageLayoutTypesData.map(({ key, value }) => (
             <ButtonOutlinedBottom
               key={key}
-              className="h-10 w-10"
+              className="h-10 w-12 rounded-none"
               handleClick={() => handleCalendarTypeButtonClick(key)}
               outlined={tableType !== key ? false : true}
             >

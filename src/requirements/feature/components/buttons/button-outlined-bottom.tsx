@@ -1,7 +1,7 @@
 'use client';
 import { RawButtonProps } from 'anitha/requirements/data-models';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 
 interface ButtonV1Props extends RawButtonProps {
   outlined?: boolean;
