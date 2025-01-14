@@ -37,10 +37,8 @@ export const PageLayout = ({
 
   return (
     title && (
-      <main
-        className={`flex flex-col gap-2 p-5 min-h-screen border-2 border-blue-600 ${className}`}
-      >
-        <header className="flex border-2 border-gray-300 p-2 justify-between">
+      <main className={`flex flex-col gap-2 p-5 min-h-screen ${className}`}>
+        <header className="flex border-gray-300 p-2 justify-between">
           <h1>{title}</h1>
           <ButtonV1>+ Create Schedule</ButtonV1>
         </header>

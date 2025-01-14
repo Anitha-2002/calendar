@@ -138,12 +138,13 @@ export const GridLayout: React.FC<GridLayoutProps> = ({}) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex border justify-between">
-        <div className="flex gap-2">
-          <div className="flex border-2 gap-1 p-2">
+      <div className="flex justify-between">
+        <div className="flex gap-2 items-center">
+          <div className="flex gap-1 p-2">
             {outlinedButtonContents.map((content, index) => (
               <ButtonOutlined
                 key={index}
+                className="h-10 w-10"
                 handleClick={() => {
                   changePeriod(index === 0 ? -1 : 1);
                 }}
@@ -152,9 +153,9 @@ export const GridLayout: React.FC<GridLayoutProps> = ({}) => {
               </ButtonOutlined>
             ))}
           </div>
-          <ButtonV1>{date}</ButtonV1>
+          <ButtonV1 className="h-10 w-10 justify-center">{date}</ButtonV1>
         </div>
-        <div className="border-2 flex px-4 items-center">
+        <div className="flex px-4 items-center">
           {tableType === 'week' ? (
             <div>{getWeekRangeString(currentDate)}</div>
           ) : (
@@ -170,6 +171,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({}) => {
           {PageLayoutTypesData.map(({ key, value }) => (
             <ButtonOutlinedBottom
               key={key}
+              className="h-10 w-10"
               handleClick={() => handleCalendarTypeButtonClick(key)}
               outlined={tableType !== key ? false : true}
             >

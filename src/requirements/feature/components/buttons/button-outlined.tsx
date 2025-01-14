@@ -9,7 +9,7 @@ export const ButtonOutlined = ({
 }: ButtonV1Props) => {
   return (
     <button
-      className={`border rounded-sm border-blue-500 px-2 py-0 hover:bg-blue-400 hover:text-white hover:border-white ${className}`}
+      className={`border rounded-sm border-blue-500 hover:bg-blue-400 hover:text-white hover:border-white ${className}`}
       onClick={handleClick}
     >
       {children}

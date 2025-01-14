@@ -15,7 +15,7 @@ export const ButtonOutlinedBottom = ({
   return (
     <button
       className={clsx(
-        `border-b-2 hover:border-blue-500 rounded-sm px-2 py-0 ${className}`,
+        `border-b-2 hover:border-blue-500 rounded-sm ${className}`,
         outlined ? 'border-blue-500' : 'border-white'
       )}
       onClick={handleClick}
