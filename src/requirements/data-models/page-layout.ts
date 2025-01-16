@@ -1,15 +1,3 @@
-export const PageLayoutTypes = {
-  DAY: 'day',
-  WEEK: 'week',
-  MONTH: 'month',
-  YEAR: 'year',
-};
+import { PageLayoutTypes } from '../helpers/page-layout-constants';
 
-export const PageLayoutTypesData = [
-  { key: PageLayoutTypes.DAY, value: 'Day' },
-  { key: PageLayoutTypes.WEEK, value: 'Week' },
-  { key: PageLayoutTypes.MONTH, value: 'Month' },
-  { key: PageLayoutTypes.YEAR, value: 'Year' },
-];
-
-export type pageType = (typeof PageLayoutTypes)[keyof typeof PageLayoutTypes];
+export type PageType = (typeof PageLayoutTypes)[keyof typeof PageLayoutTypes];
