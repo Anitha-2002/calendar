@@ -8,6 +8,11 @@ import {
 } from 'anitha/requirements/helpers/page-layout-constants';
 import eventsData from 'anitha/data/calendar-from-to-end-date.json';
 import { useCalendar } from 'anitha/requirements/helpers/context/calendar-data';
+import { format } from 'date-fns';
+import { EventComponent } from '../components/event/event';
+import { UIEventsData } from 'anitha/requirements/adapter/event-data';
+import clsx from 'clsx';
+import { EventList } from '../components/event/event-list';
 
 // interface GridLayoutProps {}
 
@@ -18,7 +23,16 @@ export const GridLayout = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tableType, setTableType] = useState<PageType>(PageLayoutTypes.YEAR);
   const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [selectedDayEvents, setSelectedEvents] = useState<any[]>([]);
+  const [selectedMonthYearEvents, setSelectedMonthYearEvents] = useState<{
+    day: number | Date;
+    events: any[];
+  }>();
+  const [selectedDayWeekEvents, setSelectedDayWeekEvents] = useState<{
+    hour: string;
+    events: any[];
+  }>();
+  const [selectedMonth, setSelectedMonth] = useState<any>();
+  const [openEventList, setOpenEventList] = useState<boolean>(false);
 
   const { selectedDate, setSelectedDate, getEventsForDate } = useCalendar();
   //get number of days in a month
@@ -83,11 +97,11 @@ export const GridLayout = () => {
   const generateMonthlyCalendar = (year: number, month: number) => {
     const daysInMonth = getDaysInMonth(year, month);
     const firstDay = getFirstDayOfMonth(year, month);
-    const daysArray: Array<{ date: number | null; events: any[] }> = [];
+    const daysArray: Array<{ day: number | null; events: any[] }> = [];
 
     // Empty slots before the first day
     for (let i = 0; i < firstDay; i++) {
-      daysArray.push({ date: null, events: [] });
+      daysArray.push({ day: null, events: [] });
     }
 
     // Add days of the month with events
@@ -98,7 +112,7 @@ export const GridLayout = () => {
       const dayEvents = events.filter((event) =>
         event.start.startsWith(currentDateString)
       );
-      daysArray.push({ date: day, events: dayEvents });
+      daysArray.push({ day: day, events: dayEvents });
     }
 
     // Group into rows for rendering
@@ -135,7 +149,7 @@ export const GridLayout = () => {
   };
 
   const generateWeekCalendar = (selectedDate: Date) => {
-    const startOfWeek = selectedDate.getDate() - selectedDate.getDay(); // Get the starting day of the week
+    const startOfWeek = selectedDate.getDate() - selectedDate.getDay();
     const daysInWeek = Array.from({ length: 7 }, (_, i) => {
       const date = new Date(selectedDate);
       date.setDate(startOfWeek + i);
@@ -144,13 +158,11 @@ export const GridLayout = () => {
 
     const daysWithEvents = daysInWeek.map((day) => {
       const dayEvents = events.filter((event) => {
-        // Make sure the event's year, month, and date match the current day in the week
         const eventDate = new Date(event.start);
         const eventYear = eventDate.getFullYear();
         const eventMonth = eventDate.getMonth();
         const eventDay = eventDate.getDate();
 
-        // Only select events from the same year, month, and date
         return (
           eventYear === day.getFullYear() &&
           eventMonth === day.getMonth() &&
@@ -158,7 +170,7 @@ export const GridLayout = () => {
         );
       });
 
-      return { date: day, events: dayEvents };
+      return { day: day, events: dayEvents };
     });
 
     return daysWithEvents;
@@ -252,15 +264,34 @@ export const GridLayout = () => {
     return eventsData.filter((event) => event.start.startsWith(dateString));
   };
 
-  const handleDayClick = (dayObj: { day: number; events: any[] }) => {
-    const selectedDayEvents = dayObj.events;
+  const handleMonthYearClick = (dayObj: {
+    day: number | null | Date;
+    events: any[];
+  }) => {
+    console.log('clicked!');
+    setOpenEventList(true);
 
-    // You can display the event details in a modal or a side panel.
-    // For simplicity, we'll log the event details to the console.
-    console.log(`Events for day ${dayObj.day}:`, selectedDayEvents);
+    if (dayObj.day !== null) {
+      setSelectedMonthYearEvents({
+        day: dayObj.day,
+        events: dayObj.events,
+      });
+    }
+  };
+  const handleDayWeekClick = (hrObj: {
+    hour: string | null;
+    events: any[];
+  }) => {
+    console.log('clicked!');
+    setOpenEventList(true);
 
-    // You can also store the event details in a state and use it to show the details in your component.
-    setSelectedEvents(selectedDayEvents); // Assuming `setSelectedEvents` sets the state of events to display
+    // Check if dayObj.day is not null
+    if (hrObj.hour !== null) {
+      setSelectedDayWeekEvents({
+        hour: hrObj.hour, // Set the day only if it's a number
+        events: hrObj.events,
+      });
+    }
   };
 
   useEffect(() => {
@@ -268,12 +299,13 @@ export const GridLayout = () => {
     console.log('eventsData: ', eventsData);
     console.log('selectedDate: ', selectedDate);
     console.log('eventsForDay: ', getEventsForDate(selectedDate));
-  }, [tableType, selectedDate]);
+    console.log('openEventList: ', openEventList);
+  }, [tableType, selectedDate, openEventList]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 border-2 border-gray-800">
       {/* Header */}
-      <div className="flex justify-between">
+      <div className="border-2 border-blue-500 sticky top-0 z-10 flex justify-between bg-white">
         <div className="flex gap-2 items-center">
           <div className="flex gap-1 p-2">
             {outlinedButtonContents.map((content, index) => (
@@ -319,14 +351,14 @@ export const GridLayout = () => {
       </div>
 
       {tableType === PageLayoutTypes.MONTH && (
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead>
+        <table className="sticky top-0 z-10 table-auto w-full border-collapse border border-gray-300">
+          <thead className="sticky top-0 z-10">
             <tr>
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(
                 (day, index) => (
                   <th
                     key={index}
-                    className="border border-gray-300 p-2 text-center text-blue-600 font-bold"
+                    className="border border-gray-300 p-2 text-center text-blue-600 font-bold sticky top-0 z-10"
                   >
                     {day}
                   </th>
@@ -337,22 +369,51 @@ export const GridLayout = () => {
           <tbody>
             {rows.map((week, weekIndex) => (
               <tr key={weekIndex}>
-                {week.map((day, dayIndex) => (
+                {week.map((dayObj, dayIndex) => (
                   <td
                     key={dayIndex}
-                    className="py-4 px-4 text-center border-b border-r"
+                    className="py-4 px-4 text-center border-b border-r h-full relative"
                   >
-                    {day.date ? (
+                    {dayObj && dayObj.day ? (
                       <div>
-                        <div className="font-bold">{day.date}</div>
-                        {day.events.length > 0 ? (
-                          <ul className="mt-2 text-sm text-gray-700">
-                            {day.events.map((event) => (
-                              <li key={event.id} className="my-1 text-blue-600">
-                                {event.summary}
-                              </li>
-                            ))}
-                          </ul>
+                        <div className="font-bold">{dayObj.day}</div>
+                        {dayObj.events.length > 0 ? (
+                          <div onClick={() => handleMonthYearClick(dayObj)}>
+                            {/* // .map((event: any) => ( */}
+                            <div
+                              key={dayObj.events[0].id}
+                              className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600"
+                              // onClick={() => handleDayClick(event as any)} // Event click handler
+                            >
+                              <div className="font-semibold">
+                                {dayObj.events[0].summary}
+                              </div>
+                              <div className="text-xs text-gray-600">
+                                {'Time: ' +
+                                  format(
+                                    new Date(dayObj.events[0].start),
+                                    new Date(
+                                      dayObj.events[0].start
+                                    ).getMinutes() === 0
+                                      ? 'h a'
+                                      : 'h:mm a'
+                                  ) +
+                                  '-' +
+                                  format(
+                                    new Date(dayObj.events[0].end),
+                                    new Date(
+                                      dayObj.events[0].end
+                                    ).getMinutes() === 0
+                                      ? 'h a'
+                                      : 'h:mm a'
+                                  )}
+                              </div>
+                              <div className="text-xs text-gray-600">
+                                {`Interviewer: ${dayObj.events[0].user_det.handled_by.firstName}`}
+                              </div>
+                            </div>
+                            {/* ))} */}
+                          </div>
                         ) : (
                           ''
                         )}
@@ -360,6 +421,15 @@ export const GridLayout = () => {
                     ) : (
                       ''
                     )}
+                    {selectedMonthYearEvents &&
+                      openEventList &&
+                      selectedMonthYearEvents.day === dayObj.day && (
+                        <EventList
+                          className="absolute top-full left-0 z-50 bg-white shadow-lg border border-gray-300 p-4"
+                          events={dayObj.events}
+                          handleClose={() => setOpenEventList(false)}
+                        />
+                      )}
                   </td>
                 ))}
               </tr>
@@ -369,28 +439,60 @@ export const GridLayout = () => {
       )}
 
       {tableType === PageLayoutTypes.DAY && (
-        <div className="overflow-hidden max-h-[900px] border border-collapse">
+        <div className="border border-collapse flex-1 p-2">
           <table className="table-auto w-full border-collapse border border-gray-300">
-            <tbody className="flex flex-col max-h-[900px] overflow-y-auto">
+            <tbody>
               {generateDayCalendar(currentDate).map((hourObj, index) => (
-                <tr key={index} className="h-12">
-                  <td className="border border-gray-300 h-12 text-center align-text-top w-32 text-blue-600">
-                    {hourObj.hour}
+                <tr key={index} className="h-12 w-full">
+                  {/* First column (hour) */}
+                  <td className="border border-gray-300 h-12 text-center align-text-top w-32 pr-6 text-blue-600">
+                    <div className="pl-6">{hourObj.hour}</div>
                   </td>
-                  <td className="border border-gray-300 flex-1">
+                  {/* Second column (events) */}
+                  <td className="border border-gray-300 w-full">
                     {hourObj.events.length > 0 ? (
-                      <ul className="space-y-1">
+                      <div className="p-1">
                         {hourObj.events.map((event) => (
-                          <li key={event.id} className="text-sm text-blue-600">
-                            <a href={event.link} className="underline">
-                              {event.summary}
-                            </a>
-                          </li>
+                          <div
+                            key={event.id}
+                            className="ml-10 text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 max-w-sm"
+                            onClick={() => handleDayWeekClick(hourObj)}
+                          >
+                            <div className="font-semibold">{event.summary}</div>
+                            <div className="text-xs text-gray-600">
+                              {'Time: ' +
+                                format(
+                                  new Date(event.start),
+                                  new Date(event.start).getMinutes() === 0
+                                    ? 'h a'
+                                    : 'h:mm a'
+                                ) +
+                                '-' +
+                                format(
+                                  new Date(event.end),
+                                  new Date(event.end).getMinutes() === 0
+                                    ? 'h a'
+                                    : 'h:mm a'
+                                )}
+                            </div>
+                            <div className="text-xs text-gray-600">
+                              {`Interviewer: ${event.user_det.handled_by.firstName}`}
+                            </div>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     ) : (
-                      <span className="text-gray-400 text-xs">No events</span>
+                      ''
                     )}
+                    {selectedDayWeekEvents &&
+                      openEventList &&
+                      selectedDayWeekEvents.hour === hourObj.hour && (
+                        <EventList
+                          className="absolute top-auto ml-8 z-50 bg-white shadow-lg border border-gray-300 p-4"
+                          events={hourObj.events}
+                          handleClose={() => setOpenEventList(false)}
+                        />
+                      )}
                   </td>
                 </tr>
               ))}
@@ -400,73 +502,95 @@ export const GridLayout = () => {
       )}
 
       {tableType === PageLayoutTypes.WEEK && (
-        <table className="table-auto w-full border-collapse border">
-          <thead>
-            <tr>
-              {[''].concat(daysOfWeek).map((day, index) => (
-                <th
-                  key={index}
-                  className="border p-2  text-center font-bold text-blue-600 border-gray-300"
-                >
-                  {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {weeklyTable.hours.map((hour, index) => (
-              <tr key={index}>
-                <td className="border border-gray-300 h-12 w-32 text-center text-blue-600 align-text-top">
-                  {hour}
-                </td>
-                {generateWeekCalendar(currentDate).map(
-                  (dayWithEvents, dayIndex) => {
-                    const dayEvents = dayWithEvents.events.filter(
-                      (event) => new Date(event.start).getHours() === index
-                    );
-
-                    return (
-                      <td
-                        key={dayIndex}
-                        className="border border-gray-300 flex-grow relative"
-                      >
-                        {dayEvents.length > 0 && (
-                          <div className="absolute inset-0 p-1">
-                            {dayEvents.map((event) => (
-                              <div
-                                key={event.id}
-                                className="text-sm bg-blue-100 text-blue-600 p-2 m-1 rounded"
-                                onClick={() =>
-                                  handleDayClick(dayWithEvents as any)
-                                } // Event click handler
-                              >
-                                <div className="font-semibold">
-                                  {event.summary}
-                                </div>
-                                <div className="text-xs text-gray-600">
-                                  {new Date(event.start).toLocaleTimeString(
-                                    [],
-                                    {
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                    }
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                    );
-                  }
-                )}
+        <div className="flex-1 p-2">
+          <table className="h-full w-full table-auto border-collapse">
+            <thead>
+              <tr>
+                {[''].concat(daysOfWeek).map((day, index) => (
+                  <th
+                    key={index}
+                    className="border p-2  text-center font-bold text-blue-600 border-gray-300"
+                  >
+                    {day}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {weeklyTable.hours.map((hour, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-300 h-12 w-32 text-center text-blue-600 align-text-top">
+                    {hour}
+                  </td>
+                  {generateWeekCalendar(currentDate).map(
+                    (dayWithEvents, dayIndex) => {
+                      const dayEvents = {
+                        day: dayWithEvents.day,
+                        events: dayWithEvents.events.filter(
+                          (event) => new Date(event.start).getHours() === index
+                        ),
+                      };
+
+                      return (
+                        <td key={dayIndex} className="border border-gray-300">
+                          {dayEvents.events.length > 0 && (
+                            <div className="p-1">
+                              {dayEvents.events.map((event) => (
+                                <div
+                                  key={event.id}
+                                  className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 relative max-w-sm"
+                                  onClick={() =>
+                                    handleMonthYearClick(dayEvents)
+                                  } // Event click handler
+                                >
+                                  <div className="font-semibold">
+                                    {event.summary}
+                                  </div>
+                                  <div className="text-xs text-gray-600">
+                                    {'Time: ' +
+                                      format(
+                                        new Date(event.start),
+                                        new Date(event.start).getMinutes() === 0
+                                          ? 'h a'
+                                          : 'h:mm a'
+                                      ) +
+                                      '-' +
+                                      format(
+                                        new Date(event.end),
+                                        new Date(event.end).getMinutes() === 0
+                                          ? 'h a'
+                                          : 'h:mm a'
+                                      )}
+                                  </div>
+                                  <div className="text-xs text-gray-600">
+                                    {`Interviewer: ${event.user_det.handled_by.firstName}`}
+                                  </div>
+                                </div>
+                              ))}
+                              {selectedMonthYearEvents &&
+                                openEventList &&
+                                selectedMonthYearEvents.day ===
+                                  dayEvents.day && (
+                                  <EventList
+                                    className="absolute top-auto ml-8 z-50 bg-white shadow-lg border border-gray-300 p-4"
+                                    events={dayEvents.events}
+                                    handleClose={() => setOpenEventList(false)}
+                                  />
+                                )}
+                            </div>
+                          )}
+                        </td>
+                      );
+                    }
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {tableType === PageLayoutTypes.YEAR && (
-        <div className="gap-4">
+        <div className="gap-4 relative">
           {generateYearlySchedule().map((row, rowIndex) => (
             <div key={rowIndex} className="flex">
               {row.map((month, monthIndex) => (
@@ -481,17 +605,41 @@ export const GridLayout = () => {
                     {month.daysWithEventsCount.map((dayObj) => (
                       <div
                         key={dayObj.day}
-                        className="text-center p-1 cursor-pointer"
-                        onClick={() => handleDayClick(dayObj)}
+                        className="text-center p-1 cursor-pointer relative"
                       >
-                        <div>
+                        <div
+                          className={clsx(
+                            dayObj.eventCount > 0
+                              ? 'bg-blue-500 text-white'
+                              : '',
+                            'flex items-center justify-center h-10 w-10 rounded-full'
+                          )}
+                          onClick={() => {
+                            handleMonthYearClick(dayObj);
+                            setSelectedMonth(month);
+                          }}
+                        >
                           {dayObj.day}
                           {dayObj.eventCount > 0 && (
-                            <sup className="text-xs text-red-600">
+                            <sup className="text-xs text-red-600 bg-gray-100 rounded-full px-1">
                               {dayObj.eventCount}
                             </sup>
                           )}
                         </div>
+
+                        {/* Conditionally Render EventList for This Day */}
+                        {selectedMonth &&
+                          selectedMonth.monthName &&
+                          selectedMonthYearEvents &&
+                          openEventList &&
+                          selectedMonthYearEvents.day === dayObj.day &&
+                          selectedMonth.monthName === month.monthName && (
+                            <EventList
+                              className="absolute top-full left-0 z-50 bg-white shadow-lg border border-gray-300 p-4"
+                              events={dayObj.events}
+                              handleClose={() => setOpenEventList(false)}
+                            />
+                          )}
                       </div>
                     ))}
                   </div>
