@@ -1,6 +1,6 @@
 'use client';
 import { PageType } from 'anitha/requirements/data-models';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ButtonOutlined, ButtonOutlinedBottom, ButtonV1 } from '../components';
 import {
   PageLayoutTypes,
@@ -9,8 +9,6 @@ import {
 import eventsData from 'anitha/data/calendar-from-to-end-date.json';
 import { useCalendar } from 'anitha/requirements/helpers/context/calendar-data';
 import { format } from 'date-fns';
-import { EventComponent } from '../components/event/event';
-import { UIEventsData } from 'anitha/requirements/adapter/event-data';
 import clsx from 'clsx';
 import { EventList } from '../components/event/event-list';
 
@@ -19,7 +17,7 @@ import { EventList } from '../components/event/event-list';
 export const GridLayout = () => {
   const outlinedButtonContents = ['<', '>'];
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const [events, setEvents] = useState(eventsData);
+  const [events] = useState(eventsData);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tableType, setTableType] = useState<PageType>(PageLayoutTypes.YEAR);
   const [isClicked, setIsClicked] = useState<boolean>(false);
@@ -27,6 +25,7 @@ export const GridLayout = () => {
     day: number | Date;
     events: any[];
   }>();
+
   const [selectedDayWeekEvents, setSelectedDayWeekEvents] = useState<{
     hour: string;
     events: any[];
@@ -34,7 +33,7 @@ export const GridLayout = () => {
   const [selectedMonth, setSelectedMonth] = useState<any>();
   const [openEventList, setOpenEventList] = useState<boolean>(false);
 
-  const { selectedDate, setSelectedDate, getEventsForDate } = useCalendar();
+  const { selectedDate } = useCalendar();
   //get number of days in a month
   const getDaysInMonth = (year: number, month: number): number => {
     return new Date(year, month + 1, 0).getDate();
@@ -91,8 +90,6 @@ export const GridLayout = () => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth(); // 0 = January, 11 = December
   const date = currentDate.getDate();
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDay = getFirstDayOfMonth(year, month);
 
   const generateMonthlyCalendar = (year: number, month: number) => {
     const daysInMonth = getDaysInMonth(year, month);
@@ -257,13 +254,6 @@ export const GridLayout = () => {
     setTableType(key);
   };
 
-  const getEventsForDay = (day: number) => {
-    const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(
-      day
-    ).padStart(2, '0')}`;
-    return eventsData.filter((event) => event.start.startsWith(dateString));
-  };
-
   const handleMonthYearClick = (dayObj: {
     day: number | null | Date;
     events: any[];
@@ -293,14 +283,6 @@ export const GridLayout = () => {
       });
     }
   };
-
-  useEffect(() => {
-    console.log('tableType: ', tableType);
-    console.log('eventsData: ', eventsData);
-    console.log('selectedDate: ', selectedDate);
-    console.log('eventsForDay: ', getEventsForDate(selectedDate));
-    console.log('openEventList: ', openEventList);
-  }, [tableType, selectedDate, openEventList]);
 
   return (
     <div className="flex flex-col gap-6 border-2 border-gray-800">

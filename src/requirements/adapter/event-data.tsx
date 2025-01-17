@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from 'react';
 import eventsData from 'anitha/data/calendar-from-to-end-date.json';
 import { ISOStringFormat } from 'date-fns';

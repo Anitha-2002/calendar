@@ -1,7 +1,4 @@
-import {
-  UIEventsData,
-  UIEventsDataType,
-} from 'anitha/requirements/adapter/event-data';
+import { UIEventsDataType } from 'anitha/requirements/adapter/event-data';
 import { format } from 'date-fns';
 import React from 'react';
 

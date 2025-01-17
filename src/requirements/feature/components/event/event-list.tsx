@@ -10,7 +10,7 @@ export const EventList = ({
   events: any[];
   handleClose: () => void;
 } & RawDefaultProps) => {
-  const [showEventPopup, setShowEventPopup] = React.useState(false);
+  const [showEventPopup, setShowEventPopup] = React.useState<boolean>(false);
   return (
     <div
       className={`flex flex-col rounded-md bg-white p-2 z-50 min-w-40 shadow-lg ${className}`}
