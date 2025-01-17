@@ -421,7 +421,7 @@ export const GridLayout = () => {
       )}
 
       {tableType === PageLayoutTypes.DAY && (
-        <div className="border border-collapse flex-1 p-2">
+        <div className="border-collapse flex-1 p-2">
           <table className="table-auto w-full border-collapse ">
             <tbody>
               {generateDayCalendar(currentDate).map((hourObj, index) => (

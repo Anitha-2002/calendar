@@ -29,7 +29,7 @@ export const EventList = ({
           <div key={event.id}>
             <div
               className="text-sm cursor-pointer outline-gray-200 bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 w-32"
-              onClick={() => setShowEventPopup(true)}
+              // onClick={() => setShowEventPopup(true)}
             >
               <div className="font-semibold">{event.summary}</div>
               <div className="text-xs text-gray-600">
