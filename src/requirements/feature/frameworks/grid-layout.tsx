@@ -285,9 +285,9 @@ export const GridLayout = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 border-2 border-gray-800">
+    <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="border-2 border-blue-500 sticky top-0 z-10 flex justify-between bg-white">
+      <div className="sticky top-0 z-10 flex justify-between bg-gray-50">
         <div className="flex gap-2 items-center">
           <div className="flex gap-1 p-2">
             {outlinedButtonContents.map((content, index) => (
@@ -333,7 +333,7 @@ export const GridLayout = () => {
       </div>
 
       {tableType === PageLayoutTypes.MONTH && (
-        <table className="sticky top-0 z-10 table-auto w-full border-collapse border border-gray-300">
+        <table className="sticky top-0 z-10 table-auto w-full border-collapse">
           <thead className="sticky top-0 z-10">
             <tr>
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(
@@ -422,7 +422,7 @@ export const GridLayout = () => {
 
       {tableType === PageLayoutTypes.DAY && (
         <div className="border border-collapse flex-1 p-2">
-          <table className="table-auto w-full border-collapse border border-gray-300">
+          <table className="table-auto w-full border-collapse ">
             <tbody>
               {generateDayCalendar(currentDate).map((hourObj, index) => (
                 <tr key={index} className="h-12 w-full">
@@ -578,7 +578,7 @@ export const GridLayout = () => {
               {row.map((month, monthIndex) => (
                 <div
                   key={monthIndex}
-                  className="justify-center items-center border border-gray-300 p-4 w-1/4 h-80"
+                  className="justify-center items-center  p-4 w-1/4 h-80"
                 >
                   <div className="text-center font-bold text-blue-600">
                     {month.monthName}
