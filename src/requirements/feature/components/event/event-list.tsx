@@ -18,7 +18,7 @@ export const EventList = ({
       <div className="flex justify-between">
         <div>Meetings</div>
         <div
-          className="h-6 w-6 rounded-full bg-blue-500 cursor-pointer text-white flex items-center justify-center hover:bg-white hover:text-blue-500"
+          className="h-6 w-6 rounded-full border border-blue-500 bg-white cursor-pointer text-blue-500 flex items-center justify-center hover:text-white hover:bg-blue-500"
           onClick={() => handleClose()}
         >
           x

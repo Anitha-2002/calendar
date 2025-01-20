@@ -1,6 +1,6 @@
 'use client';
 import { PageType } from 'anitha/requirements/data-models';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ButtonOutlined, ButtonOutlinedBottom, ButtonV1 } from '../components';
 import {
   PageLayoutTypes,
@@ -21,19 +21,21 @@ export const GridLayout = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tableType, setTableType] = useState<PageType>(PageLayoutTypes.YEAR);
   const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [selectedMonthYearEvents, setSelectedMonthYearEvents] = useState<{
-    day: number | Date;
-    events: any[];
-  }>();
 
   const [selectedDayWeekEvents, setSelectedDayWeekEvents] = useState<{
     hour: string;
     events: any[];
   }>();
   const [selectedMonth, setSelectedMonth] = useState<any>();
+  const [selectedHour, setSelectedHour] = useState<number>();
   const [openEventList, setOpenEventList] = useState<boolean>(false);
 
   const { selectedDate } = useCalendar();
+  const [selectedMonthYearEvents, setSelectedMonthYearEvents] = useState<{
+    day: number | Date;
+    events: any[];
+  }>({ day: selectedDate, events: [] });
+
   //get number of days in a month
   const getDaysInMonth = (year: number, month: number): number => {
     return new Date(year, month + 1, 0).getDate();
@@ -521,9 +523,10 @@ export const GridLayout = () => {
                                 <div
                                   key={event.id}
                                   className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 relative max-w-sm"
-                                  onClick={() =>
-                                    handleMonthYearClick(dayEvents)
-                                  } // Event click handler
+                                  onClick={() => {
+                                    handleMonthYearClick(dayEvents);
+                                    setSelectedHour(index);
+                                  }}
                                 >
                                   <div className="font-semibold">
                                     {event.summary}
@@ -549,10 +552,12 @@ export const GridLayout = () => {
                                   </div>
                                 </div>
                               ))}
-                              {selectedMonthYearEvents &&
-                                openEventList &&
-                                selectedMonthYearEvents.day ===
-                                  dayEvents.day && (
+
+                              {openEventList &&
+                                selectedHour === index &&
+                                selectedMonthYearEvents.day instanceof Date &&
+                                selectedMonthYearEvents.day.getTime() ===
+                                  dayEvents.day.getTime() && (
                                   <EventList
                                     className="absolute top-auto ml-8 z-50 bg-white shadow-lg border border-gray-300 p-4"
                                     events={dayEvents.events}
