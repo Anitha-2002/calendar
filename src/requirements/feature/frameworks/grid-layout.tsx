@@ -351,7 +351,7 @@ export const GridLayout = () => {
                 (day, index) => (
                   <th
                     key={index}
-                    className="border border-gray-300 p-2 text-center text-blue-600 font-bold sticky top-0 z-10"
+                    className="border border-gray-300 w-1/7 p-2 text-center text-blue-600 font-bold sticky top-0 z-10"
                   >
                     {day}
                   </th>
@@ -371,12 +371,13 @@ export const GridLayout = () => {
                       <div>
                         <div className="font-bold">{dayObj.day}</div>
                         {dayObj.events.length > 0 ? (
-                          <div onClick={() => handleMonthYearClick(dayObj)}>
-                            {/* // .map((event: any) => ( */}
+                          <div
+                            className="flex justify-center"
+                            onClick={() => handleMonthYearClick(dayObj)}
+                          >
                             <div
                               key={dayObj.events[0].id}
-                              className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600"
-                              // onClick={() => handleDayClick(event as any)} // Event click handler
+                              className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 w-32"
                             >
                               <div className="font-semibold">
                                 {dayObj.events[0].summary}
@@ -461,7 +462,7 @@ export const GridLayout = () => {
                         {hourObj.events.map((event) => (
                           <div
                             key={event.id}
-                            className="ml-10 text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 max-w-sm"
+                            className="ml-10 text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 w-48"
                             onClick={() => {
                               console.log(
                                 'Event object before setting in state:',
@@ -537,7 +538,7 @@ export const GridLayout = () => {
                 {[''].concat(daysOfWeek).map((day, index) => (
                   <th
                     key={index}
-                    className="border p-2  text-center font-bold text-blue-600 border-gray-300"
+                    className="border p-2 w-1/8 text-center font-bold text-blue-600 border-gray-300"
                   >
                     {day}
                   </th>

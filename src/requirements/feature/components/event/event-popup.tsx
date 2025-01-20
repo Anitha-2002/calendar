@@ -22,16 +22,16 @@ export const EventPopup = ({
       onClose={handleClose}
     >
       <div className="flex justify-between bg-white min-w-40 min-h-40 divide-x-2 gap-2 border-2">
-        <div className="flex flex-col p-2 items-start gap-2 text-2xl">
-          <div className="text-xs text-gray-600">{`Interviewer: ${selectedEvent?.user_det?.handled_by?.firstName || 'N/A'}`}</div>
-          <div className="text-xs text-gray-600">{`Position: ${selectedEvent?.job_id?.jobRequest_Title}`}</div>
-          <div className="text-xs text-gray-600">{`Created By:-`}</div>
+        <div className="flex flex-col p-2 items-start gap-2 text-lg">
+          <div className="text-gray-600">{`Interviewer: ${selectedEvent?.user_det?.handled_by?.firstName || 'N/A'}`}</div>
+          <div className=" text-gray-600">{`Position: ${selectedEvent?.job_id?.jobRequest_Title}`}</div>
+          <div className=" text-gray-600">{`Created By:-`}</div>
           <div className="flex flex-col items-start">
-            <div className="text-xs text-gray-600">
+            <div className=" text-gray-600">
               {`Interview Date: ${format(new Date(selectedEvent.start), 'dd MMM yyyy')}`}
             </div>
 
-            <div className="text-xs text-gray-600">{`Interview Time: ${format(
+            <div className=" text-gray-600">{`Interview Time: ${format(
               new Date(selectedEvent.start),
               new Date(selectedEvent.start).getMinutes() === 0
                 ? 'h a'
@@ -41,7 +41,7 @@ export const EventPopup = ({
               new Date(selectedEvent.end).getMinutes() === 0 ? 'h a' : 'h:mm a'
             )}`}</div>
           </div>
-          <div className="text-xs text-gray-600">{`Interview Via: Google Meet`}</div>
+          <div className=" text-gray-600">{`Interview Via: Google Meet`}</div>
         </div>
         <div className="flex flex-col p-2">
           <img

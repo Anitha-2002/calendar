@@ -19,7 +19,7 @@ export const EventList = ({
   return (
     <>
       <div
-        className={`flex flex-col rounded-md bg-white p-2 z-50 min-w-40 shadow-lg ${className}`}
+        className={`flex flex-col rounded-md bg-white p-2 gap-2 z-50 min-w-40 shadow-lg ${className}`}
       >
         <div className="flex justify-between">
           <div>Meetings</div>

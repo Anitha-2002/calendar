@@ -29,7 +29,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         className={`absolute inset-0 flex items-center justify-center z-50 ${className}`}
       >
-        <div className="bg-white p-6 rounded-lg shadow-2xl w-96 relative">
+        <div className="bg-white p-6 rounded-lg shadow-2xl w-auto relative">
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <h1 className="text-blue-600 text-xl font-bold">
