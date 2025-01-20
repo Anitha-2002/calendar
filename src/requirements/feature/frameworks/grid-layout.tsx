@@ -1,6 +1,6 @@
 'use client';
 import { PageType } from 'anitha/requirements/data-models';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ButtonOutlined, ButtonOutlinedBottom, ButtonV1 } from '../components';
 import {
   PageLayoutTypes,
@@ -8,12 +8,9 @@ import {
 } from 'anitha/requirements/helpers/page-layout-constants';
 import eventsData from 'anitha/data/calendar-from-to-end-date.json';
 import { useCalendar } from 'anitha/requirements/helpers/context/calendar-data';
-import { format, set } from 'date-fns';
+import { format } from 'date-fns';
 import clsx from 'clsx';
 import { EventList } from '../components/event/event-list';
-import { EventPopup } from '../components/event/event-popup';
-
-// interface GridLayoutProps {}
 
 export const GridLayout = () => {
   const outlinedButtonContents = ['<', '>'];
@@ -29,13 +26,10 @@ export const GridLayout = () => {
   }>();
   const [selectedMonth, setSelectedMonth] = useState<any>();
   const [selectedHour, setSelectedHour] = useState<number>();
-  // const [selectedEvent, setSelectedEvent] = useState({});
 
   const {
     selectedDate,
-    showEventPopup,
     setShowEventPopup,
-    selectedEvent,
     setSelectedEvent,
     openEventList,
     setOpenEventList,
@@ -54,7 +48,7 @@ export const GridLayout = () => {
   const getFirstDayOfMonth = (year: number, month: number): number => {
     return new Date(year, month, 1).getDay();
   };
-  // get the start of the week (Sunday) and end of the week (Saturday)
+  //get the start of the week (Sunday) and end of the week (Saturday)
   const getWeekRange = (date: Date) => {
     const startDate = new Date(date);
     const endDate = new Date(date);
@@ -99,7 +93,7 @@ export const GridLayout = () => {
   };
 
   const year = currentDate.getFullYear();
-  const month = currentDate.getMonth(); // 0 = January, 11 = December
+  const month = currentDate.getMonth();
   const date = currentDate.getDate();
 
   const generateMonthlyCalendar = (year: number, month: number) => {
@@ -107,12 +101,12 @@ export const GridLayout = () => {
     const firstDay = getFirstDayOfMonth(year, month);
     const daysArray: Array<{ day: number | null; events: any[] }> = [];
 
-    // Empty slots before the first day
+    // empty slots before the first day
     for (let i = 0; i < firstDay; i++) {
       daysArray.push({ day: null, events: [] });
     }
 
-    // Add days of the month with events
+    // add days of the month with events
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(
         day
@@ -123,7 +117,7 @@ export const GridLayout = () => {
       daysArray.push({ day: day, events: dayEvents });
     }
 
-    // Group into rows for rendering
+    // group into rows for rendering
     const rows = [];
     for (let i = 0; i < daysArray.length; i += 7) {
       rows.push(daysArray.slice(i, i + 7));
@@ -189,28 +183,6 @@ export const GridLayout = () => {
     days: generateWeekCalendar(selectedDate), // Calls the generateWeekCalendar to get the days of the week and their events
   };
 
-  // const generateYearlySchedule = () => {
-  //   const months = [];
-  //   const year = currentDate.getFullYear();
-
-  //   for (let month = 0; month < 12; month++) {
-  //     const daysInMonth = getDaysInMonth(year, month);
-  //     months.push({
-  //       monthName: new Date(year, month).toLocaleString('default', {
-  //         month: 'long',
-  //       }),
-  //       daysInMonth,
-  //     });
-  //   }
-
-  //   //split months into 3 rows of 4 months
-  //   const rows = [];
-  //   for (let i = 0; i < 12; i += 4) {
-  //     rows.push(months.slice(i, i + 4));
-  //   }
-
-  //   return rows;
-  // };
   const generateYearlySchedule = () => {
     const months = [];
     const year = currentDate.getFullYear();
@@ -286,10 +258,9 @@ export const GridLayout = () => {
     console.log('clicked!');
     setOpenEventList(true);
 
-    // Check if dayObj.day is not null
     if (hrObj.hour !== null) {
       setSelectedDayWeekEvents({
-        hour: hrObj.hour, // Set the day only if it's a number
+        hour: hrObj.hour,
         events: hrObj.events,
       });
     }
@@ -365,7 +336,7 @@ export const GridLayout = () => {
                 {week.map((dayObj, dayIndex) => (
                   <td
                     key={dayIndex}
-                    className="py-4 px-4 text-center border-b border-r h-full relative"
+                    className="py-4 px-4 text-center border border-gray-300 h-full relative"
                   >
                     {dayObj && dayObj.day ? (
                       <div>
@@ -406,7 +377,6 @@ export const GridLayout = () => {
                                 {`Interviewer: ${dayObj.events[0].user_det.handled_by.firstName}`}
                               </div>
                             </div>
-                            {/* ))} */}
                           </div>
                         ) : (
                           ''
@@ -428,15 +398,6 @@ export const GridLayout = () => {
                           }}
                         />
                       )}
-                    {/* {showEventPopup && (
-                      <EventPopup
-                        events={dayObj.events}
-                        showModal={showEventPopup}
-                        handleClose={() => {
-                          setShowEventPopup(false);
-                        }}
-                      />
-                    )} */}
                   </td>
                 ))}
               </tr>
@@ -451,11 +412,9 @@ export const GridLayout = () => {
             <tbody>
               {generateDayCalendar(currentDate).map((hourObj, index) => (
                 <tr key={index} className="h-12 w-full">
-                  {/* First column (hour) */}
                   <td className="border border-gray-300 h-12 text-center align-text-top w-32 pr-6 text-blue-600">
                     <div className="pl-6">{hourObj.hour}</div>
                   </td>
-                  {/* Second column (events) */}
                   <td className="border border-gray-300 w-full">
                     {hourObj.events.length > 0 ? (
                       <div className="p-1">
@@ -511,17 +470,6 @@ export const GridLayout = () => {
                           }}
                         />
                       )}
-                    {/* {showEventPopup && selectedEvent && (
-                      <EventPopup
-                        selectedEvent={selectedEvent}
-                        showModal={showEventPopup}
-                        handleClose={() => {
-                          if (!selectedEvent || showEventPopup) {
-                            setShowEventPopup(false);
-                          }
-                        }}
-                      />
-                    )} */}
                   </td>
                 </tr>
               ))}
@@ -663,7 +611,6 @@ export const GridLayout = () => {
                           )}
                         </div>
 
-                        {/* Conditionally Render EventList for This Day */}
                         {selectedMonth &&
                           selectedMonth.monthName &&
                           selectedMonthYearEvents &&
@@ -680,15 +627,6 @@ export const GridLayout = () => {
                               }}
                             />
                           )}
-                        {/* {showEventPopup && (
-                          <EventPopup
-                            events={dayObj.events}
-                            showModal={showEventPopup}
-                            handleClose={() => {
-                              setShowEventPopup(false);
-                            }}
-                          />
-                        )} */}
                       </div>
                     ))}
                   </div>

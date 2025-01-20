@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import { RawDefaultProps } from 'anitha/requirements/data-models';
 import { EventPopup } from './event-popup';
@@ -24,10 +24,10 @@ export const EventList = ({
         <div className="flex justify-between">
           <div>Meetings</div>
           <div
-            className="h-6 w-6 rounded-full border border-blue-500 bg-white cursor-pointer text-blue-500 flex items-center justify-center hover:text-white hover:bg-blue-500"
+            className="h-6 w-6 rounded-full border font-extrabold border-blue-500 bg-white cursor-pointer text-blue-500 flex items-center justify-center hover:text-white hover:bg-blue-500"
             onClick={() => handleClose()}
           >
-            x
+            &times;
           </div>
         </div>
         <div className="max-h-[7rem] overflow-y-auto pr-2">
