@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
@@ -7,7 +7,13 @@ const nextConfig: NextConfig = {
         ...config.resolve.fallback,
         fs: false,
       };
+
+      config.module.rules.push({
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      });
     }
+
     return config;
   },
 };

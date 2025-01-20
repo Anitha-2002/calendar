@@ -8,9 +8,10 @@ import {
 } from 'anitha/requirements/helpers/page-layout-constants';
 import eventsData from 'anitha/data/calendar-from-to-end-date.json';
 import { useCalendar } from 'anitha/requirements/helpers/context/calendar-data';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import clsx from 'clsx';
 import { EventList } from '../components/event/event-list';
+import { EventPopup } from '../components/event/event-popup';
 
 // interface GridLayoutProps {}
 
@@ -28,9 +29,17 @@ export const GridLayout = () => {
   }>();
   const [selectedMonth, setSelectedMonth] = useState<any>();
   const [selectedHour, setSelectedHour] = useState<number>();
-  const [openEventList, setOpenEventList] = useState<boolean>(false);
+  // const [selectedEvent, setSelectedEvent] = useState({});
 
-  const { selectedDate } = useCalendar();
+  const {
+    selectedDate,
+    showEventPopup,
+    setShowEventPopup,
+    selectedEvent,
+    setSelectedEvent,
+    openEventList,
+    setOpenEventList,
+  } = useCalendar();
   const [selectedMonthYearEvents, setSelectedMonthYearEvents] = useState<{
     day: number | Date;
     events: any[];
@@ -412,8 +421,21 @@ export const GridLayout = () => {
                           className="absolute top-full left-0 z-50 bg-white shadow-lg border border-gray-300 p-4"
                           events={dayObj.events}
                           handleClose={() => setOpenEventList(false)}
+                          handleEventClick={(event) => {
+                            setShowEventPopup(true);
+                            setSelectedEvent(event);
+                          }}
                         />
                       )}
+                    {/* {showEventPopup && (
+                      <EventPopup
+                        events={dayObj.events}
+                        showModal={showEventPopup}
+                        handleClose={() => {
+                          setShowEventPopup(false);
+                        }}
+                      />
+                    )} */}
                   </td>
                 ))}
               </tr>
@@ -440,7 +462,14 @@ export const GridLayout = () => {
                           <div
                             key={event.id}
                             className="ml-10 text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 max-w-sm"
-                            onClick={() => handleDayWeekClick(hourObj)}
+                            onClick={() => {
+                              console.log(
+                                'Event object before setting in state:',
+                                JSON.stringify(event)
+                              );
+                              handleDayWeekClick(hourObj);
+                              setSelectedEvent(event);
+                            }}
                           >
                             <div className="font-semibold">{event.summary}</div>
                             <div className="text-xs text-gray-600">
@@ -475,8 +504,23 @@ export const GridLayout = () => {
                           className="absolute top-auto ml-8 z-50 bg-white shadow-lg border border-gray-300 p-4"
                           events={hourObj.events}
                           handleClose={() => setOpenEventList(false)}
+                          handleEventClick={(event) => {
+                            setShowEventPopup(true);
+                            setSelectedEvent(event);
+                          }}
                         />
                       )}
+                    {/* {showEventPopup && selectedEvent && (
+                      <EventPopup
+                        selectedEvent={selectedEvent}
+                        showModal={showEventPopup}
+                        handleClose={() => {
+                          if (!selectedEvent || showEventPopup) {
+                            setShowEventPopup(false);
+                          }
+                        }}
+                      />
+                    )} */}
                   </td>
                 </tr>
               ))}
@@ -562,6 +606,10 @@ export const GridLayout = () => {
                                     className="absolute top-auto ml-8 z-50 bg-white shadow-lg border border-gray-300 p-4"
                                     events={dayEvents.events}
                                     handleClose={() => setOpenEventList(false)}
+                                    handleEventClick={(event) => {
+                                      setShowEventPopup(true);
+                                      setSelectedEvent(event);
+                                    }}
                                   />
                                 )}
                             </div>
@@ -625,8 +673,21 @@ export const GridLayout = () => {
                               className="absolute top-full left-0 z-50 bg-white shadow-lg border border-gray-300 p-4"
                               events={dayObj.events}
                               handleClose={() => setOpenEventList(false)}
+                              handleEventClick={(event) => {
+                                setShowEventPopup(true);
+                                setSelectedEvent(event);
+                              }}
                             />
                           )}
+                        {/* {showEventPopup && (
+                          <EventPopup
+                            events={dayObj.events}
+                            showModal={showEventPopup}
+                            handleClose={() => {
+                              setShowEventPopup(false);
+                            }}
+                          />
+                        )} */}
                       </div>
                     ))}
                   </div>

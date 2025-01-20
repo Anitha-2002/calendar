@@ -2,19 +2,25 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { isSameDay } from 'date-fns';
 
-interface Event {
-  id: number;
-  summary: string;
-  desc: string;
-  start: string;
-  end: string;
-}
+// interface Event {
+//   id: number;
+//   summary: string;
+//   desc: string;
+//   start: string;
+//   end: string;
+// }
 
 interface CalendarContextState {
-  events: Event[];
+  events: any[];
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
-  getEventsForDate: (date: Date) => Event[];
+  selectedEvent: any;
+  setSelectedEvent: (event: any) => void;
+  showEventPopup: boolean;
+  setShowEventPopup: (show: boolean) => void;
+  openEventList: boolean;
+  setOpenEventList: (open: boolean) => void;
+  getEventsForDate: (date: Date) => any[];
 }
 
 const CalendarContext = createContext<CalendarContextState | undefined>(
@@ -23,7 +29,7 @@ const CalendarContext = createContext<CalendarContextState | undefined>(
 
 interface CalendarProviderProps {
   children: ReactNode;
-  initialEvents: Event[];
+  initialEvents: any[];
 }
 
 export const CalendarProvider: React.FC<CalendarProviderProps> = ({
@@ -31,8 +37,11 @@ export const CalendarProvider: React.FC<CalendarProviderProps> = ({
   initialEvents,
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState({});
+  const [showEventPopup, setShowEventPopup] = useState<boolean>(false);
+  const [openEventList, setOpenEventList] = useState<boolean>(false);
 
-  const getEventsForDate = (date: Date): Event[] => {
+  const getEventsForDate = (date: Date) => {
     return initialEvents.filter((event) =>
       isSameDay(new Date(event.start), date)
     );
@@ -44,7 +53,13 @@ export const CalendarProvider: React.FC<CalendarProviderProps> = ({
         events: initialEvents,
         selectedDate,
         setSelectedDate,
+        selectedEvent,
+        setSelectedEvent,
+        openEventList,
+        setOpenEventList,
         getEventsForDate,
+        showEventPopup,
+        setShowEventPopup,
       }}
     >
       {children}
