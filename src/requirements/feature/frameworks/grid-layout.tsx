@@ -182,7 +182,14 @@ export const GridLayout = () => {
     hours: Array.from({ length: 24 }, (_, i) => `${i}:00`),
     days: generateWeekCalendar(selectedDate),
   };
-
+  function getStartOfWeek(date: Date, startDay = 0) {
+    const dayOfWeek = date.getDay();
+    const difference = (dayOfWeek < startDay ? 7 : 0) + dayOfWeek - startDay;
+    const startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - difference - 1);
+    startOfWeek.setHours(0, 0, 0, 0);
+    return startOfWeek;
+  }
   const generateYearlySchedule = () => {
     const months = [];
     const year = currentDate.getFullYear();
@@ -496,14 +503,28 @@ export const GridLayout = () => {
           <table className="h-full w-full table-auto border-collapse">
             <thead>
               <tr>
-                {[''].concat(daysOfWeek).map((day, index) => (
-                  <th
-                    key={index}
-                    className="border p-2 w-1/8 text-center font-bold text-blue-600 border-gray-300"
-                  >
-                    {day}
-                  </th>
-                ))}
+                {[''].concat(daysOfWeek).map((day, index) => {
+                  const startOfWeek = getStartOfWeek(currentDate); // Get the week's start date
+                  const date = new Date(startOfWeek);
+                  date.setDate(startOfWeek.getDate() + index); // Add days to get each day's date
+
+                  return (
+                    <th
+                      key={index}
+                      className="border p-2 w-1/8 text-center font-light border-gray-300"
+                    >
+                      {index > 0 && (
+                        <div>
+                          {date.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                          })}
+                        </div>
+                      )}
+                      {day}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
