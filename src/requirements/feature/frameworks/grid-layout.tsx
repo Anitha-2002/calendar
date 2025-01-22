@@ -179,8 +179,8 @@ export const GridLayout = () => {
   };
 
   const weeklyTable = {
-    hours: Array.from({ length: 24 }, (_, i) => `${i}:00`), // Hours from 0:00 to 23:00
-    days: generateWeekCalendar(selectedDate), // Calls the generateWeekCalendar to get the days of the week and their events
+    hours: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+    days: generateWeekCalendar(selectedDate),
   };
 
   const generateYearlySchedule = () => {
@@ -193,7 +193,6 @@ export const GridLayout = () => {
         month: 'long',
       });
 
-      // Get events for the month and for each day in the month
       const eventsForMonth = events.filter((event) => {
         const eventDate = new Date(event.start);
         return (
@@ -342,39 +341,44 @@ export const GridLayout = () => {
                       <div>
                         <div className="font-bold">{dayObj.day}</div>
                         {dayObj.events.length > 0 ? (
-                          <div
-                            className="flex justify-center"
-                            onClick={() => handleMonthYearClick(dayObj)}
-                          >
+                          <div className="p-3 relative">
                             <div
-                              key={dayObj.events[0].id}
-                              className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 w-32"
+                              className="flex justify-center"
+                              onClick={() => handleMonthYearClick(dayObj)}
                             >
-                              <div className="font-semibold">
-                                {dayObj.events[0].summary}
+                              <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                                {dayObj.events.length}
                               </div>
-                              <div className="text-xs text-gray-600">
-                                {'Time: ' +
-                                  format(
-                                    new Date(dayObj.events[0].start),
-                                    new Date(
-                                      dayObj.events[0].start
-                                    ).getMinutes() === 0
-                                      ? 'h a'
-                                      : 'h:mm a'
-                                  ) +
-                                  '-' +
-                                  format(
-                                    new Date(dayObj.events[0].end),
-                                    new Date(
-                                      dayObj.events[0].end
-                                    ).getMinutes() === 0
-                                      ? 'h a'
-                                      : 'h:mm a'
-                                  )}
-                              </div>
-                              <div className="text-xs text-gray-600">
-                                {`Interviewer: ${dayObj.events[0].user_det.handled_by.firstName}`}
+                              <div
+                                key={dayObj.events[0].id}
+                                className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 w-full"
+                              >
+                                <div className="font-semibold">
+                                  {dayObj.events[0].summary}
+                                </div>
+                                <div className="text-xs text-gray-600">
+                                  {'Time: ' +
+                                    format(
+                                      new Date(dayObj.events[0].start),
+                                      new Date(
+                                        dayObj.events[0].start
+                                      ).getMinutes() === 0
+                                        ? 'h a'
+                                        : 'h:mm a'
+                                    ) +
+                                    '-' +
+                                    format(
+                                      new Date(dayObj.events[0].end),
+                                      new Date(
+                                        dayObj.events[0].end
+                                      ).getMinutes() === 0
+                                        ? 'h a'
+                                        : 'h:mm a'
+                                    )}
+                                </div>
+                                <div className="text-xs text-gray-600">
+                                  {`Interviewer: ${dayObj.events[0].user_det.handled_by.firstName}`}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -418,41 +422,50 @@ export const GridLayout = () => {
                   <td className="border border-gray-300 w-full">
                     {hourObj.events.length > 0 ? (
                       <div className="p-1">
-                        {hourObj.events.map((event) => (
+                        <div className="ml-10 p-3 relative w-48 ">
                           <div
-                            key={event.id}
-                            className="ml-10 text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 w-48"
+                            key={hourObj.events[0].id}
+                            className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600"
                             onClick={() => {
                               console.log(
                                 'Event object before setting in state:',
-                                JSON.stringify(event)
+                                JSON.stringify(hourObj.events[0])
                               );
                               handleDayWeekClick(hourObj);
                               setSelectedEvent(event);
                             }}
                           >
-                            <div className="font-semibold">{event.summary}</div>
+                            <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                              {hourObj.events.length}
+                            </div>
+                            <div className="font-semibold">
+                              {hourObj.events[0].summary}
+                            </div>
                             <div className="text-xs text-gray-600">
                               {'Time: ' +
                                 format(
-                                  new Date(event.start),
-                                  new Date(event.start).getMinutes() === 0
+                                  new Date(hourObj.events[0].start),
+                                  new Date(
+                                    hourObj.events[0].start
+                                  ).getMinutes() === 0
                                     ? 'h a'
                                     : 'h:mm a'
                                 ) +
                                 '-' +
                                 format(
-                                  new Date(event.end),
-                                  new Date(event.end).getMinutes() === 0
+                                  new Date(hourObj.events[0].end),
+                                  new Date(
+                                    hourObj.events[0].end
+                                  ).getMinutes() === 0
                                     ? 'h a'
                                     : 'h:mm a'
                                 )}
                             </div>
                             <div className="text-xs text-gray-600">
-                              {`Interviewer: ${event.user_det.handled_by.firstName}`}
+                              {`Interviewer: ${hourObj.events[0].user_det.handled_by.firstName}`}
                             </div>
                           </div>
-                        ))}
+                        </div>
                       </div>
                     ) : (
                       ''
@@ -512,40 +525,46 @@ export const GridLayout = () => {
                         <td key={dayIndex} className="border border-gray-300">
                           {dayEvents.events.length > 0 && (
                             <div className="p-1">
-                              {dayEvents.events.map((event) => (
+                              <div className="p-3 relative max-w-sm">
                                 <div
-                                  key={event.id}
-                                  className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600 relative max-w-sm"
+                                  key={dayEvents.events[0].id}
+                                  className="text-sm cursor-pointer shadow-lg bg-white hover:bg-blue-100 text-blue-600 p-2 rounded border-l-8 border-blue-600"
                                   onClick={() => {
                                     handleMonthYearClick(dayEvents);
                                     setSelectedHour(index);
                                   }}
                                 >
+                                  <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                                    {dayEvents.events.length}
+                                  </div>
                                   <div className="font-semibold">
-                                    {event.summary}
+                                    {dayEvents.events[0].summary}
                                   </div>
                                   <div className="text-xs text-gray-600">
                                     {'Time: ' +
                                       format(
-                                        new Date(event.start),
-                                        new Date(event.start).getMinutes() === 0
+                                        new Date(dayEvents.events[0].start),
+                                        new Date(
+                                          dayEvents.events[0].start
+                                        ).getMinutes() === 0
                                           ? 'h a'
                                           : 'h:mm a'
                                       ) +
                                       '-' +
                                       format(
-                                        new Date(event.end),
-                                        new Date(event.end).getMinutes() === 0
+                                        new Date(dayEvents.events[0].end),
+                                        new Date(
+                                          dayEvents.events[0].end
+                                        ).getMinutes() === 0
                                           ? 'h a'
                                           : 'h:mm a'
                                       )}
                                   </div>
                                   <div className="text-xs text-gray-600">
-                                    {`Interviewer: ${event.user_det.handled_by.firstName}`}
+                                    {`Interviewer: ${dayEvents.events[0].user_det.handled_by.firstName}`}
                                   </div>
                                 </div>
-                              ))}
-
+                              </div>
                               {openEventList &&
                                 selectedHour === index &&
                                 selectedMonthYearEvents.day instanceof Date &&

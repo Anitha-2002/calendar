@@ -30,7 +30,7 @@ export const EventList = ({
             &times;
           </div>
         </div>
-        <div className="max-h-[7rem] overflow-y-auto pr-2">
+        <div className="max-h-[12rem] overflow-y-auto pr-2">
           {events.map((event: any) => (
             <div key={event.id}>
               <div
